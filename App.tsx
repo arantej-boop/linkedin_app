@@ -1,10 +1,5 @@
-
-import React, { useState, useCallback } from 'react';
-import { InputForm } from './components/InputForm';
-import { PostPreview } from './components/PostPreview';
-import { generatePostContent, generatePostImage } from './services/geminiService';
-import { PostData, PostInput } from './types';
-import { INITIAL_POST_DATA } from './constants';
+// App.tsx — versión mínima sin imports externos
+import { useState } from "react";
 
 function Header({ title = "LinkedIn Post Generator", subtitle = "Industria / PYMEs" }) {
   return (
@@ -15,67 +10,23 @@ function Header({ title = "LinkedIn Post Generator", subtitle = "Industria / PYM
     </header>
   );
 }
+
 export default function App() {
-  const [postInput, setPostInput] = useState<PostInput>({
-    topic: '',
-    audience: 'Engineers',
-    tone: 'Professional',
-    keyInfo: '',
-    imagePrompt: '',
-  });
-
-  const [generatedPost, setGeneratedPost] = useState<PostData>(INITIAL_POST_DATA);
-  const [generatedImage, setGeneratedImage] = useState<string>('https://picsum.photos/seed/linkedin/1200/628');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleGenerate = useCallback(async (action: 'text' | 'image' | 'all') => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      if (action === 'text' || action === 'all') {
-        setGeneratedPost({ postContent: 'Generating...', hashtags: [] });
-        const postData = await generatePostContent(postInput);
-        setGeneratedPost(postData);
-      }
-      if (action === 'image' || action === 'all') {
-        if (!postInput.imagePrompt) {
-          setError("Please provide a prompt for the image.");
-          setIsLoading(false);
-          return;
-        }
-        setGeneratedImage(''); // Clear previous image
-        const imageUrl = await generatePostImage(postInput.imagePrompt);
-        setGeneratedImage(imageUrl);
-      }
-    } catch (err) {
-      console.error(err);
-      setError(err instanceof Error ? err.message : 'An unknown error occurred.');
-      setGeneratedPost(INITIAL_POST_DATA); // Reset on error
-    } finally {
-      setIsLoading(false);
-    }
-  }, [postInput]);
+  const [prompt, setPrompt] = useState("");
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800">
+    <main style={{ maxWidth: 720, margin: "0 auto", padding: 24 }}>
       <Header />
-      <main className="container mx-auto max-w-7xl px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-          <InputForm
-            postInput={postInput}
-            setPostInput={setPostInput}
-            onGenerate={handleGenerate}
-            isLoading={isLoading}
-          />
-          <PostPreview
-            postData={generatedPost}
-            imageDataUrl={generatedImage}
-            isLoading={isLoading}
-            error={error}
-          />
-        </div>
-      </main>
-    </div>
+      <label style={{ display: "block", marginBottom: 8 }}>Brief del post</label>
+      <textarea
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        placeholder="Describe el post para LinkedIn…"
+        style={{ width: "100%", minHeight: 140, padding: 12 }}
+      />
+      <div style={{ marginTop: 12, opacity: 0.7 }}>
+        <small>Tu clave irá en variables de entorno en Vercel.</small>
+      </div>
+    </main>
   );
 }
