@@ -1,22 +1,16 @@
-// App.tsx — versión mínima que compila sin imports externos
-import { useState } from "react";
+import React from "react";
 
-export default function App() {
-  const [prompt, setPrompt] = useState("");
+type Props = {
+  title?: string;
+  subtitle?: string;
+};
 
+export default function Header({ title = "LinkedIn Post Generator", subtitle = "Industria / PYMEs" }: Props) {
   return (
-    <main style={{ maxWidth: 720, margin: "0 auto", padding: 24 }}>
-      <h1 style={{ margin: 0 }}>LinkedIn Post Generator</h1>
-      <p style={{ margin: "6px 0 16px 0", opacity: 0.8 }}>Industria / PYMEs</p>
-      <hr style={{ marginBottom: 16 }} />
-
-      <label style={{ display: "block", marginBottom: 8 }}>Brief del post</label>
-      <textarea
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Describe el post para LinkedIn…"
-        style={{ width: "100%", minHeight: 140, padding: 12 }}
-      />
-    </main>
+    <header style={{ padding: "16px 0" }}>
+      <h1 style={{ margin: 0 }}>{title}</h1>
+      {subtitle ? <p style={{ margin: "4px 0 0 0", opacity: 0.8 }}>{subtitle}</p> : null}
+      <hr style={{ marginTop: 16 }} />
+    </header>
   );
 }
