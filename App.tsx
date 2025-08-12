@@ -1,12 +1,20 @@
 
 import React, { useState, useCallback } from 'react';
-import { Header } from './components/Header';
 import { InputForm } from './components/InputForm';
 import { PostPreview } from './components/PostPreview';
 import { generatePostContent, generatePostImage } from './services/geminiService';
 import { PostData, PostInput } from './types';
 import { INITIAL_POST_DATA } from './constants';
 
+function Header({ title = "LinkedIn Post Generator", subtitle = "Industria / PYMEs" }) {
+  return (
+    <header style={{ padding: "16px 0" }}>
+      <h1 style={{ margin: 0 }}>{title}</h1>
+      {subtitle ? <p style={{ margin: "4px 0 0 0", opacity: 0.8 }}>{subtitle}</p> : null}
+      <hr style={{ marginTop: 16 }} />
+    </header>
+  );
+}
 export default function App() {
   const [postInput, setPostInput] = useState<PostInput>({
     topic: '',
